@@ -1,0 +1,6 @@
+{
+  "name": "Analog-Studio Prompt Builder",
+  "description": "Ein hochpräziser analoger Prompt-Baukasten mit 3 Szenarien (Porträt, Landschaft, Objekte), Wizard- und Dialog-Modus sowie überlagerten Filmen und Papieren.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
