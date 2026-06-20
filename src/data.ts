@@ -57,7 +57,6 @@ export interface PromptOptions {
     effect: string;
     effect_include: string;
     negative_prompt: string;
-    // New defaults for themes
     genre: string;
     street_subject: string;
     street_subject_include: string;
@@ -105,7 +104,7 @@ export interface PromptOptions {
   weather_conditions: string[];
   emotional_depth: string[];
   
-  // NEW GENRE SPECIFIC OPTION LISTS
+  // THEMATIC INVENTORIES
   landscape_subjects: string[];
   street_subjects: string[];
   seasons: string[];
@@ -170,13 +169,11 @@ export const promptOptionsData: PromptOptions = {
     emotion: "stiller Blick voller Entschlossenheit / quiet gaze full of determination",
     emotion_include: "yes",
     post_processing_choice: "yes",
-    post_processing: "Rodinal chemische Graustufen-Entwicklung / Rodinal acutance chemical development process",
+    post_processing: "Monobath HC-M1 Einbad-Schnellentwickler / Monobath HC-M1 rapid 3-in-1 single-bath chemistry, processing developer-stop-fixer simultaneously in 180 seconds",
     post_processing_include: "yes",
     effect: "erhabene klassische Ausstrahlung / sublime classical museum presence",
     effect_include: "yes",
     negative_prompt: "blurry, low quality, digital renderer, plastic look, smooth 3d CGI skin, airbrushed",
-    
-    // Genre specific defaults
     genre: "portrait / portrait",
     street_subject: "geschäftiges Straßencafé im herbstlichen Paris / a bustling sidewalk cafe in autumn Paris",
     street_subject_include: "yes",
@@ -265,6 +262,11 @@ export const promptOptionsData: PromptOptions = {
       "Minolta X-700, Reportage-Spezialistin / Minolta X-700 street photography SLR",
       "Contax T2, Premium Titankompakte / Contax T2 luxury compact titanium camera with Carl Zeiss",
       "Nikon F6, Letzte Profi-SLR / Nikon F6 premium modern automated 35mm SLR camera",
+      "Pentax K1000, Unverwüstliche Schülerlinse / Pentax K1000 classic manual vintage student SLR",
+      "Olympus Pen F, Halbbild-Klassiker / Olympus Pen F creative half-frame 35mm SLR camera",
+      "Canon New F-1, Profi-Arbeitstier / Canon New F-1 heavy-duty mechanical professional SLR",
+      "Minox B, Historische Spionagekamera / Minox B subminiature metallic ultra-compact spy camera",
+      "Yashica Electro 35 GSN, Messsucher-Kult / Yashica Electro 35 GSN vintage rangefinder",
       "Leica M10 Monochrom, Luxus-Schwarzweiß / Leica M10 Monochrom high-resolution digital black and white rangefinder"
     ],
     "Mittelformat / Medium Format": [
@@ -277,6 +279,9 @@ export const promptOptionsData: PromptOptions = {
       "Plaubel Makina 67, Faltbare Pracht / Plaubel Makina 67 folding camera with Nikkor 80mm",
       "Hasselblad 503CW, Perfektioniertes 6x6 / Hasselblad 503CW advanced mechanical 120 film camera",
       "Yashica Mat 124G, Zweiäugige Legende / Yashica Mat 124G twin-lens reflex medium format TLR camera",
+      "Fujifilm GA645, Autofokus Point-and-Shoot / Fujifilm GA645 professional medium format point-and-shoot",
+      "Kiev 88, Sowjetische Hasselblad-Kopie / Kiev 88 classic Cyrillic robust 6x6 medium format SLR",
+      "Bronica SQ-Ai, Quadratische Studio-Legende / Bronica SQ-Ai modular 6x6 medium format system",
       "Fuji GSW690 III, Weitwinkel Riesen-Negativ / Fuji GSW690 III wide angle 6x9 landscape camera"
     ],
     "Großformat / Large Format": [
@@ -284,6 +289,8 @@ export const promptOptionsData: PromptOptions = {
       "Sinar P2 8x10, Präzisions-Fachkamera / Sinar P2 studio technical 8x10 monorail camera",
       "Deardorff 8x10, Hölzerner Kunstabzugsklassiker / Deardorff 8x10 wooden grand format view camera",
       "Chamonix 45N-2, Teakholz-Leichtbau / Chamonix 45N-2 modern carbon-fiber and teakwood field camera",
+      "Graflex Speed Graphic 4x5, Historische Presse-Legende / Graflex Speed Graphic 4x5 vintage press focal-plane camera",
+      "Tachihara 4x5, Japanischer Hartholz-Klassiker / Tachihara 4x5 lightweight wooden fold-out view camera",
       "Toyo-Field 45AII, Laufboden-Klassiker / Toyo-Field 45AII heavy metal folding field view camera",
       "Wista 45DX, Hölzerne Landschaftsoptik / Wista 45DX classic hand-carved cherrywood field camera",
       "Arca-Swiss F-Metric 4x5, Technische Kamera / Arca-Swiss F-Metric highly functional technical view camera"
@@ -291,11 +298,13 @@ export const promptOptionsData: PromptOptions = {
     "Fachkameras / Technical Cameras": [
       "Arca-Swiss F-Line Metric 4x5, Studio-Präzision / Arca-Swiss F-Line Metric view camera",
       "Linhof Technikardan 45, Faltenbalg-Kombination / Linhof Technikardan 45 pocketable monorail technical camera",
+      "Sinar P3 Professional 4x5, Ultimatives Rückteil / Sinar P3 high-end modular mechanical view camera",
       "Toyo VX125, Flexibles Studio-Arbeitstier / Toyo VX125 versatile technical camera"
     ],
     "Studiokameras / Studio Cameras": [
       "Sinar P3 Studio, Digitale Feinverstellung / Sinar P3 Studio technical high precision digital camera",
       "Gibellini Studio 11x14, Monumentaler Riesenbalg / Gibellini Studio 11x14 ultimate large scale darkroom camera",
+      "Toyo-View 810G II, Massive 8x10 Metallkamera / Toyo-View 810G II industrial dual-rail 8x10 technical camera",
       "Deardorff 11x14, Historische Atelierkamera / Deardorff 11x14 vintage studio portrait camera"
     ],
     "Feldkameras / Field Cameras": [
@@ -304,16 +313,20 @@ export const promptOptionsData: PromptOptions = {
       "Chamonix 045F-2, Extrem flexibler Teak-Kompaktling / Chamonix 045F-2 folding wooden camera"
     ],
     "Polaroid": [
-      "Polaroid SX-70, Spiegelreflex-Falter / Polaroid SX-70 folding single-lens reflex instant camera",
+      "Polaroid SX-70 Alpha 1, Chrom & Leder-Kult / Polaroid SX-70 Alpha 1 folding single-lens reflex instant camera",
+      "Polaroid SLR 680, Professionelle Autofokus-Sensation / Polaroid SLR 680 premium sonar autofocus folding instant camera",
       "Polaroid Land Camera 195, Reine manuelle Kontrolle / Polaroid Land Camera 195 fully manual instant camera",
       "Polaroid Land Camera 250, Messsucher-Klassiker / Polaroid Land Camera 250 bellows rangefinder instant camera",
-      "Polaroid 600 Close-Up, Alltags-Klicker / Polaroid 600 instant camera with integrated closeup lens",
+      "Polaroid 600 Sun 660, Sonar-Fokus-Pionier / Polaroid 600 Sun 660 autofocus instant camera",
       "Polaroid Big Shot, Ikonische Porträtkamera / Polaroid Big Shot plastic rigid-body portrait instant camera"
     ],
     "Sofortbildkameras / Instant Cameras": [
       "Polaroid SX-70, Faltbarer Klassiker / Polaroid SX-70 instant model",
+      "Polaroid Now+ Gen 2, Kreative Bluetooth-Kamera / Polaroid Now+ Gen 2 modern connected instant camera",
+      "Lomo'Instant Wide, Volle kreative Kontrolle / Lomo'Instant Wide multi-exposure analog instant camera",
       "Fuji Instax 300 Wide, Breitbild-Sofortdruck / Fuji Instax 300 Wide print instant system",
-      "Fuji Instax Mini 90 Neo Classic, Retro-Sofortbild / Fuji Instax Mini 90 Neo Classic retro direct camera"
+      "Fuji Instax Mini 90 Neo Classic, Retro-Sofortbild / Fuji Instax Mini 90 Neo Classic retro direct camera",
+      "Fuji Instax Square SQ6, Wahres 1:1 Quadratformat / Fuji Instax Square SQ6 classic analog square instant camera"
     ],
     "Lochkameras / Pinhole Cameras": [
       "Zero Image 2000 6x6, Teakholz-Unikat / Zero Image 2000 handcrafted wooden 6x6 pinhole camera",
@@ -323,31 +336,38 @@ export const promptOptionsData: PromptOptions = {
     "Panoramakameras / Panoramic Cameras": [
       "Linhof Technorama 617S III, Gigantische 6x17-Breite / Linhof Technorama 617S III professional panoramic camera",
       "Hasselblad XPan II, Doppelkopf-Kleinbild-Panorama / Hasselblad XPan II dual-format 35mm panoramic rangefinder",
-      "Widelux F7, Schwenkobjektiv-Kult / Widelux F7 swinging-lens 35mm kinetic panorama camera"
+      "Widelux F7, Schwenkobjektiv-Kult / Widelux F7 swinging-lens 35mm kinetic panorama camera",
+      "Horizon 202, Sowjetischer Schwunglinsen-Klassiker / Horizon 202 panoramic mechanical swing-lens camera"
     ],
     "Spiegelreflex / SLR": [
       "Nikon F3 HP, Dauerbrenner / Nikon F3 HP high-eyepoint SLR",
       "Canon New F-1, Unverwüstliche Systemkamera / Canon F-1 mechanical SLR masterpiece",
+      "Olympus OM-4 Ti, Titan-Multispot-König / Olympus OM-4 Ti premium lightweight weather-sealed titanium SLR",
       "Pentax LX, Wetterversiegelte Luxusklasse / Pentax LX legendary weather-sealed SLR with mechanical backup"
     ],
     "Messsucher / Rangefinder": [
       "Leica M6, Reportage-Legende / Leica M6 manual focus rangefinder camera",
+      "Leica M3, Reiner mechanischer Meilenstein / Leica M3 legendary rangefinder with 0.91x magnification finder",
       "Zeiss Ikon ZM, Extrabreiter Sucher / Zeiss Ikon ZM rangefinder with wide 0.74x viewfinder",
-      "Voigtländer Bessa R4M, Weitwinkel-Messsucher / Voigtländer Bessa R4M mechanical wide-angle rangefinder"
+      "Voigtländer Bessa R4M, Weitwinkel-Messsucher / Voigtländer Bessa R4M mechanical wide-angle rangefinder",
+      "Canon QL17 GIII, Kleine 'Leica des armen Mannes' / Canon QL17 GIII classic compact rangefinder with fast f1.7 lens"
     ],
     "Kompaktkameras / Compact Cameras": [
       "Yashica T4, Scharfes Tessar-Objektiv / Yashica T4 compact camera with Carl Zeiss Tessar f3.5",
       "Olympus Stylus Epic Mju-II, Wetterfestes Kult-Ei / Olympus Mju II 35mm f2.8 pocket camera",
-      "Nikon 28Ti, Analoges Zeigerinstrument / Nikon 28Ti luxury titanium compact with analog clockwork dials"
+      "Contax T3, Titan-Luxuszwerg / Contax T3 ultra-compact titanium luxury camera with Carl Zeiss Sonnar",
+      "Nikon 28Ti, Analoges Zeigerinstrument / Nikon 28Ti luxury titanium compact with analog clockwork dials",
+      "Ricoh GR1s, Ultradünne Profi-Weitwinkel-Kompakte / Ricoh GR1s magnesium-body professional compact 28mm camera"
     ],
     "Systemkameras / Mirrorless": [
-      "Hasselblad X1D II 50C, Stilvolles Digital-Mittelformat / Hasselblad X1D II 50C digital medium format camera",
-      "Fujifilm GFX 100S, Riesensensor / Fujifilm GFX 100S high-resolution medium format digital backup",
-      "Sony A7R V, Extrem detailreich / Sony A7R V high resolution full-frame digital camera"
+      "Hasselblad X2D 100C, 100 Megapixel Kunstwerk / Hasselblad X2D 100C medium format digital back",
+      "Fujifilm GFX 100 II, Ultrakompakte Leistung / Fujifilm GFX 100 II grand format 102MP digital system",
+      "Phase One XF IQ4 150MP, Ultimative Studioauflösung / Phase One XF IQ4 medium format 150MP studio camera"
     ],
     "Spielzeugkameras / Toy Cameras": [
       "Holga 120N, Plastik-Vignettierungs-Kult / Holga 120N plastic medium format toy camera with heavy light leaks",
-      "Diana F+, Sanfter Traum-Look / Diana F+ 120 medium format blue-plastic dream camera with strobe"
+      "Diana F+, Sanfter Traum-Look / Diana F+ 120 medium format blue-plastic dream camera with strobe",
+      "Lomo LC-A+, Legendärer Weitwinkel-Schnappschuss / Lomo LC-A+ classic Minitar-1 lens highly vignetted street snapshot camera"
     ]
   },
   films: {
@@ -360,24 +380,33 @@ export const promptOptionsData: PromptOptions = {
       "Kodak Gold 200, Goldene Alltagstöne / Kodak Gold 200 rich warm golden-hour saturated consumer film",
       "CineStill 400D, Warme harmonische Farben / CineStill 400D cinematic daylight-balanced color film",
       "Ilford Delta 3200, Reiches sichtbares Silberkorn / Ilford Delta 3200 high-speed hyper-grain atmospheric film",
-      "Kodak Ektar 100, Höchste Farbsättigung / Kodak Ektar 100 saturated vivid color landscape-quality film"
+      "Kodak Ektar 100, Höchste Farbsättigung / Kodak Ektar 100 saturated vivid color landscape-quality film",
+      "Agfa Vista 200, Knallige Farben / Agfa Vista 200 vintage retro color negative drugstore classic",
+      "Fujifilm Superia X-TRA 400, Weicher Allrounder / Fujifilm Superia X-TRA 400 fourth color layer high-fidelity negative",
+      "Kodak ColorPlus 200, Nostalgischer Drogerieklassiker / Kodak ColorPlus 200 vintage grainy warm-hearted print film",
+      "Ilford Pan F Plus 50, Schärfenriese / Ilford Pan F Plus 50 slow speed rich high-contrast black-and-white film",
+      "Kodak Aerochrome III, Infrarot-Falschfarbenlegende / Kodak Aerochrome III 1443 color-infrared slide film with shocking magenta foliage"
     ],
     "Mittelformat / Medium Format": [
       "Kodak Portra 160, Traumhafte Hautfarben / Kodak Portra 160 extremely delicate natural skin tone standard",
       "Kodak Portra 400, Reiches Kontrast-Farbspiel / Kodak Portra 400 professional high latitude medium format film",
+      "Kodak Portra 800, König des Available Light / Kodak Portra 800 high-speed warm-saturated portrait film",
       "Fujifilm Velvia 50, Unglaublich satte Naturfarben / Fujifilm Velvia 50 ultra-vibrant legendary chrome landscape slide film",
       "Ilford HP5 Plus 400, Edles klares Graustufen-Sortiment / Ilford HP5 Plus 400 classic medium-format reportage silver",
       "Kodak Tri-X 400, Körniges Schwarz-Weiß / Kodak Tri-X 400 panchromatic rich black standard",
       "Kodak Ektachrome E100, Kühler feiner Diafilm / Kodak Ektachrome E100 razor-sharp saturated slide reversal film",
       "Fuji Pro 400H, Luftige Pastelle und kühles Türkis / Fuji Pro 400H pastel-green airy medium format portrait film",
-      "Ilford Delta 100, Ultrascharfe Detailauflösung / Ilford Delta 100 fine grain tabular grain precision emulsion"
+      "Ilford Delta 100, Ultrascharfe Detailauflösung / Ilford Delta 100 fine grain tabular grain precision emulsion",
+      "Lomography Lady Grey 400, Satte Graustufen / Lomography Lady Grey 400 panchromatic rich silver negative",
+      "Shanghai GP3 100, Klassisch chinesische Emulsion / Shanghai GP3 100 vintage raw medium format panchromatic film"
     ],
     "Großformat / Large Format": [
       "Kodak Tri-X 320, Großer Detailreichtum / Kodak Tri-X 320 professional sheet film with deep midtone latitude",
       "Ilford Delta 100, Raufaserfreie Schärfe / Ilford Delta 100 modern T-grain large format monochrome sheet film",
       "Kodak T-Max 100, Flachkristall-Schärfe / Kodak T-Max 100 panchromatic film with infinite resolving power",
       "Fuji Velvia 100, Extreme Farbtransparenz / Fuji Velvia 100 high saturation landscape chrome sheet film",
-      "Bergger Pancro 400, Doppelschichtige Silbertiefe / Bergger Pancro 400 silver-rich dense dual-emulsion sheet film"
+      "Bergger Pancro 400, Doppelschichtige Silbertiefe / Bergger Pancro 400 silver-rich dense dual-emulsion sheet film",
+      "Adox CHS 100 II, Historische Orthopanchromatische Seele / Adox CHS 100 II single-layer classic portrait sheet film"
     ],
     "Fachkameras / Technical Cameras": [
       "Kodak T-Max 100, Unübertroffen feines Korn / Kodak T-Max 100 fine grain positive copy",
@@ -397,28 +426,37 @@ export const promptOptionsData: PromptOptions = {
     "Polaroid": [
       "Polaroid i-Type Color, Moderner Original-Sofortdruck / Polaroid i-Type Color rich-edge modern instant film",
       "Polaroid 600 Monochrome, Kühler Vintage-Schwarzweißton / Polaroid 600 Monochrome chemistry nostalgic direct monochrome",
-      "Fuji FP-100C, Die verblasste Trennbildlegende / Fuji FP-100C legendary peel-apart glossy packfilm"
+      "Fuji FP-100C, Die verblasste Trennbildlegende / Fuji FP-100C legendary peel-apart glossy packfilm",
+      "Fuji FP-100C Silk, Geprägtes Trennbild-Kultobjekt / Fuji FP-100C Silk textured-surface professional peel-apart instant packfilm",
+      "Fuji FP-3000B, Extrem schneller S/W-Trennbildfilm / Fuji FP-3000B co-existent black-and-white high-speed peel-apart packfilm",
+      "Polaroid Type 55, Edler Positiv-Negativ-Kunstfilm / Polaroid Type 55 legendary 4x5 grand format positive-negative instant sheet",
+      "Polaroid Type 669, Vintage-Farbpackfilm von 1991 / Polaroid Type 669 vintage warm-saturated color peel-apart instant packfilm"
     ],
     "Sofortbildkameras / Instant Cameras": [
       "Polaroid 600 Color, Ikonische Farb-Sofortbilder / Polaroid 600 Color classic instant film stock",
-      "Fuji Instax Wide, Helle stabile Naturfarben / Fuji Instax Wide direct film"
+      "Fuji Instax Wide Monochrome, Klassische S/W-Bilder / Fuji Instax Wide Monochrome clean direct development",
+      "Fuji Instax Square Color, Knackige Quadrat-Sofortbilder / Fuji Instax Square Color saturated miniature instant chemistry"
     ],
     "c41": [
       "Kodak Portra 400, Der Branchenstandard / Kodak Portra 400 professional portrait emulsion",
       "Kodak Gold 200, Warm schwebende Vintage-Sonne / Kodak Gold 200 warm yellow consumer film chemistry",
       "Kodak Ektar 100, Scharf wie Glas und farbintensiv / Kodak Ektar 100 super fine grain deep-saturated color film",
       "Fuji Superia 400, Grünstichige kühle Natürlichkeit / Fuji Superia 400 vivid green matrix consumer film",
-      "Lomography Metropolis, Desaturierter Urban-Look / Lomography Metropolis desaturated high contrast color negative film"
+      "Lomography Metropolis, Desaturierter Urban-Look / Lomography Metropolis desaturated high contrast color negative film",
+      "Kodak Portra 800, Atemberaubende Available-Light-Farben / Kodak Portra 800 rich-color warm-toned low light professional chemistry",
+      "Agfa Vista 200 retro, Klassische gesättigte Rottöne / Agfa Vista 200 saturated vintage retro color negative look"
     ],
     "e6": [
       "Kodak Ektachrome E100, Kristallines Realitäts-Glas / Kodak Ektachrome E100 vivid color slide reversal film",
       "Fujifilm Velvia 50, Übersättigte lebhafte Pracht / Fujifilm Velvia 50 high saturation positive slide transparency",
-      "Fujifilm Provia 100F, Neutrale professionelle Dia-Präzision / Fujifilm Provia 100F natural chrome reversal film"
+      "Fujifilm Provia 100F, Neutrale professionelle Dia-Präzision / Fujifilm Provia 100F natural chrome reversal film",
+      "Fujifilm Fortia SP, Mythischer japanischer Farbkick / Fujifilm Fortia SP hyper-saturated rare vaporwave slide chemistry"
     ],
     "expired": [
       "Kodak Gold (Abgelaufen 1992), Warme Magentastiche / Kodak Gold 100 expired in 1992, nostalgic yellow-magenta shift, organic mold dust",
       "Fuji Superia (Abgelaufen 1998), Verblasste Grüntöne / Fuji Superia 400 expired in 1998, high-contrast faded green shadows",
-      "Kodak Vericolor III (Abgelaufen 1984), Sanfter Pastellhauch / Kodak Vericolor III vintage expired sheet film, beautiful pale orange tone"
+      "Kodak Vericolor III (Abgelaufen 1984), Sanfter Pastellhauch / Kodak Vericolor III vintage expired sheet film, beautiful pale orange tone",
+      "Polaroid Type 669 (Abgelaufen 1991), Farbchemische Halos / Polaroid Type 669 expired in 1991, intense organic turquoise-brown color leakage"
     ],
     "experimental": [
       "Lomography LomoChrome Purple, Grün wird zu Violett / Lomography LomoChrome Purple surreal color-shifted color negative",
@@ -434,7 +472,9 @@ export const promptOptionsData: PromptOptions = {
       "Nikon Nikkor 50mm f/1.2 AIS, Weicher Schimmer bei Offenblende / Nikon Nikkor 50mm f1.2 AIS fast prime classic with glowing wide-open halation",
       "Zeiss Planar T* 50mm f/1.4, Dreidimensionaler Kontrast / Carl Zeiss Planar T* 50mm f1.4 lens with rich structural contrast",
       "Rollei HFT Planar 50mm f/1.8, Vintage-Schärfenzeichnung / Rollei HFT Planar 50mm f1.8 smooth multi-coated lens",
-      "Voigtländer Nokton 40mm f/1.2, Kompakte Lichtstärke / Voigtländer Nokton 40mm f1.2 bright portrait glass"
+      "Voigtländer Nokton 40mm f/1.2, Kompakte Lichtstärke / Voigtländer Nokton 40mm f1.2 bright portrait glass",
+      "Helios 44-2 58mm f/2, Legendäres wirbelndes Bokeh / Helios 44-2 58mm f2 iconic soviet lens with classic swirling circular bokeh",
+      "Meyer-Optik Görlitz Trioplan 100mm f/2.8, Seifenblasen-Bokeh / Meyer-Optik Görlitz Trioplan 100mm f2.8 rare vintage bubble-bokeh profile"
     ],
     "Mittelformat / Medium Format": [
       "Mamiya Sekor Z 110mm f/2.8, Absolute Porträtlegende / Mamiya Sekor Z 110mm f2.8 pin-sharp portrait lens with creamy background melt",
@@ -448,7 +488,8 @@ export const promptOptionsData: PromptOptions = {
       "Rodenstock Apo-Sironar-S 150mm f/5.6, Klinische Detail-Chirurgie / Rodenstock Apo-Sironar-S 150mm f5.6 high-fidelity standard sheet lens",
       "Schneider Super-Symmar XL 110mm f/5.6, Extrem kontraststark / Schneider Super-Symmar XL 110mm f5.6 ultimate sharpness large format optics",
       "Goerz Dagor 12-inch f/6.8, Ikonischer weicher Übergang / Goerz Dagor 300mm f6.8 vintage double-anastigmat lens representing classic transitions",
-      "Nikon Nikkor-W 210mm f/5.6, Symmetrischer Klassiker / Nikon Nikkor-W 210mm f5.6 large format medium telephoto lens"
+      "Nikon Nikkor-W 210mm f/5.6, Symmetrischer Klassiker / Nikon Nikkor-W 210mm f5.6 large format medium telephoto lens",
+      "Wollensak Verito 8-and-three-quarter-inch f/4, Traumhafte historische Weichzeichnung / Wollensak Verito 222mm f4 vintage pictorial soft-focus diffuse visual character"
     ],
     "Fachkameras / Technical Cameras": [
       "Rodenstock HR Digaron-S 60mm f/4, Speziell für Planfilm / Rodenstock HR Digaron-S 60mm f4 high-resolution technical view lens",
@@ -627,23 +668,22 @@ export const promptOptionsData: PromptOptions = {
     "Cyanotypie-Blau mit sandfarbenen Rändern / cyanotype blueprint style with organic brush borders"
   ],
   post_processing: [
-    "Historischer Lith-Entwickler (Lith-Auszugsprozess mit infektiöser Entwicklung) / historical Lith development (infectious high-contrast black shadows, warm chalky highlights, and graphic grain borders)",
-    "Nasse Kollodium-Glasplatte (historisches nasses Kollodion-Verfahren) / Wet plate collodion silver-dye glass plate process with dramatic silvering, edge artifacts, and chemical stains",
-    "Vandyke Brown (historischer Eisensilber-Braundruck auf Baumwollkarton) / Vandyke Brown historic contact process (deep hand-coated chocolate-amber shadows and natural brushmargins)",
-    "Platin-Palladium-Edeldruck (Handbeschichteter Platinabzug für weiche Tonskalen) / Platinum-palladium hand-coated contact print (tactile cotton textures, infinite gray scale transitions)",
-    "Cyanotypie-Blaudruck (Edeldruck-Zitronensäurebad für tiefe Indigo-Blautöne) / Cyanotype contact blueprint process (pristine Berlin blue shades, hand-painted liquid borders, and textured paper fibers)",
-    "Albumin-Eiweiß-Silberabzug (Klassischer Seidenglanz von 1850) / Albumen print historic paper process (warm cream yellow albumin sheen and soft shadow richness)",
-    "Salzdruck-Verfahren (Talbotypie Salzpapier-Handabzug von 1840) / Salted paper print historic process from 1840 (matte organic surface, reddish-brown tones, and soft detail)",
-    "Argentyper (Experimentelle physische Silberkrustenabsetzung) / Argentyper experimental physical silver crystallization (raw metallic luster and edge irregularities)",
-    "Rodinal-Entwickler, kornbetont u. rasiermesserscharf / developer chemistry: Rodinal (para-aminophenol) for enhanced grain outline and maximum acutance",
-    "Kodak D-76, ausgewogen und neutral / developer chemistry: Kodak D-76 (hydroquinone-metol) gold-standard balanced grain and grey spectrum",
-    "Kodak HC-110, extrem satte Kontraste / developer chemistry: Kodak HC-110 liquid concentrate for rich chemical blacks and high contrast",
-    "PMK Pyro gerbende Lichtertrennung / developer chemistry: PMK Pyro stain chemistry for unique green-yellow shadow modulation and vintage lights",
-    "Pyrocat-HD 3D-Kantenwirkung / developer chemistry: Pyrocat-HD staining developer for incredible three-dimensional microcontrast",
-    "C-41 Labor-Maschinenentwicklung / chemical lab process: state-of-the-art C-41 color machine development with neutral color fidelity",
-    "E-6 Labor-Diaentwicklung / chemical lab process: professional E-6 reversal multi-bath slide development for vibrant glow",
-    "ECN-2 Hollywood-Kinoentwicklung / chemical lab process: Kodak ECN-2 motion-picture process with soft movie print curve",
-    "Bayer-Muster Digitalentwicklung / development: standard digital camera sensor conversion with high-end color grading"
+    "Monobath HC-M1 Einbad-Schnellentwickler / Monobath HC-M1 rapid 3-in-1 single-bath chemistry, processing developer-stop-fixer simultaneously in 180 seconds",
+    "Rodinal 1+25 Express-Schärfebad / Rodinal (para-aminophenol) 1+25 dilution express high-acutance rapid chemical development",
+    "C-41 Rapid 2-Bad Farbentwicklung / C-41 rapid 2-bath developer kit, fast color oxidation with high warm saturation",
+    "B&W Monobath D96 Schnellumkehrprozess / B&W Monobath D96 rapid reversal chemistry, instant black-and-white slide projection positive",
+    "Kodak HC-110 Dilution A Hochgeschwindigkeitsbad / Kodak HC-110 liquid concentrate Dilution A for ultra-rapid high-contrast silver soot extraction",
+    "Caffenol-C-M Instant-Koffein-Aktivierungsentwickler / Caffenol-C-M eco-friendly instant coffee-vitamin C chemical activation bath",
+    "Fuji FP-100C Schnelldiffusions-Entwicklerkammer / Fuji FP-100C fast instant pod fluid migration development",
+    "Bleach Bypass (ECN-2 Schnell-Bleichauslassverfahren) / ECN-2 beach-bypass rapid processing (retains high metallic silver, extreme shadow contrast, desaturated tones)",
+    "Pyrocat-HD 3D-Kantenwirkung Schnellumwälzer / Pyrocat-HD staining express developer, optimized with rapid circulation for extreme edge sharpness",
+    "Ilford Microphen Feinkorn-Pushentwicklung / Ilford Microphen rapid fine-grain push-developer, boosting local shadows (+2 stops) in 4 minutes",
+    "Kodak D-76 Stock Schnellentwicklungs-Prozess / Kodak D-76 stock solution rapid professional multi-tank developer bath",
+    "ECN-2 Hollywood Kinofilm-Schnellumkehrverfahren / ECN-2 motion-picture express processing with rapid rem-jet backing removal bath",
+    "Tetenal Colortec E-6 Schnellumkkehrbad / Tetenal Colortec 3-bath rapid E-6 reversal process, high contrast slide saturation",
+    "PMK Pyro Gerbendes-Schnellentwicklungsbad / PMK Pyro stain speed chemistry, high-contrast tanning developer for vintage yellow-green shadow density",
+    "Lith-Auszugsprozess (Infektiöse Schnelle Kontrastentwicklung) / Infectious Lith chemistry, rapid high-contrast developer for graphic ink blacks and chalky highlights",
+    "Nasses Kollodion Hochgeschwindigkeitsprozess / Wet plate collodion fast silver bath, immediate hand-sensitized wet plate exposure development"
   ],
   poses: [
     "direkter, unerschütterlicher Blick in die Linse / looking directly into the camera lens with unwavering focus",
@@ -680,8 +720,6 @@ export const promptOptionsData: PromptOptions = {
     "sanfte, verträumte Nachdenklichkeit / soft dreamy thoughtfulness, deep inner contemplation",
     "historisch gealtertes Vermächtnis / weathered look carrying a heavy historic legacy"
   ],
-
-  // NEW THEMATIC INVENTORIES
   landscape_subjects: [
     "schroffe Klippen vor stürmischem Ozean / rugged granite cliffs facing a wild stormy ocean with rising spray",
     "nebelverhangener Kiefernwald im herbstlichen Hochland / fog-draped towering pine forest in the wet autumn highlands",

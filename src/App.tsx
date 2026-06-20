@@ -37,6 +37,12 @@ function getLangText(text: string, lang: "Deutsch" | "English"): string {
     const parts = text.split(" / ");
     return lang === "Deutsch" ? parts[0].trim() : parts[1].trim();
   }
+  // Robust translation fallbacks for legacy/direct gender selections
+  if (text === "Männlich") return lang === "Deutsch" ? "Männlich" : "Male";
+  if (text === "Weiblich") return lang === "Deutsch" ? "Weiblich" : "Female";
+  if (text === "Diverse") return lang === "Deutsch" ? "Diverse" : "Non-binary";
+  if (text === "Male") return lang === "Deutsch" ? "Männlich" : "Male";
+  if (text === "Female") return lang === "Deutsch" ? "Weiblich" : "Female";
   return text;
 }
 
@@ -107,7 +113,7 @@ export default function App() {
       success: "legendär / legendary",
       nationality: "Moroccan",
       role: "Visionär / visionary",
-      gender: "Männlich",
+      gender: "Männlich / Male",
       age_range: "reif (40er), erfahren und weise / mature (40s), seasoned and wise",
       camera_type: "Mittelformat / Medium Format",
       camera: "Mamiya RZ67 Pro II",
@@ -201,6 +207,7 @@ export default function App() {
   // Notification overlays
   const [copiedEnglish, setCopiedEnglish] = useState<boolean>(false);
   const [copiedGerman, setCopiedGerman] = useState<boolean>(false);
+  const [copiedMarkdown, setCopiedMarkdown] = useState<boolean>(false);
   const [saveModalOpen, setSaveModalOpen] = useState<boolean>(false);
   const [customTitle, setCustomTitle] = useState<string>("");
   const [saveCategory, setSaveCategory] = useState<string>("Porträt analog");
@@ -292,7 +299,7 @@ export default function App() {
     setSettings(prev => {
       const updated = { ...prev, gender: newGender };
       // Switch clothing list automatically
-      if (newGender === "Männlich" || newGender === "Male") {
+      if (newGender.includes("Männlich") || newGender.includes("Male")) {
         updated.clothing = options.mens_clothing[0];
       } else {
         updated.clothing = options.womens_clothing[0];
@@ -303,10 +310,118 @@ export default function App() {
 
   // Compile real-time prompt builders
   const compilePrompt = (lang: "Deutsch" | "English") => {
-    const isDE = lang === "Deutsch";
     const isOutdoor = settings.location?.toLowerCase().includes("outdoor") || settings.location?.toLowerCase().includes("außen") || genre === "landscape";
     const isBW = settings.type?.toLowerCase().includes("weiß") || settings.type?.toLowerCase().includes("white") || settings.type?.toLowerCase().includes("monochrom");
 
+    if (lang === "Deutsch") {
+      // 🎞️ MIDJOURNEY / TAG-TOKEN STYLE (Always in English, as requested)
+      const tags: string[] = [];
+      
+      if (genre === "portrait") {
+        tags.push(isBW ? "authentic raw black-and-white analog portrait photography" : "authentic professional color analog portrait photography");
+        
+        let subjectStr = "";
+        const parts: string[] = [];
+        parts.push(getLangText(settings.gender, "English"));
+        if (includes.success) parts.push(getLangText(settings.success, "English"));
+        if (includes.nationality && settings.nationality) parts.push(getLangText(settings.nationality, "English"));
+        if (includes.role) parts.push(getLangText(settings.role, "English"));
+        if (parts.length > 0) subjectStr = parts.join(" ");
+        if (subjectStr) tags.push(subjectStr);
+        
+        if (includes.age) tags.push(getLangText(settings.age_range, "English"));
+        if (includes.traits) tags.push(getLangText(settings.traits, "English"));
+        if (includes.details) tags.push(getLangText(settings.details, "English"));
+        if (includes.pose) tags.push(getLangText(settings.pose, "English"));
+        
+        const apparel: string[] = [];
+        if (includes.clothing) apparel.push(getLangText(settings.clothing, "English"));
+        if (includes.cultural) apparel.push(getLangText(settings.cultural_element, "English"));
+        if (apparel.length > 0) tags.push(`wearing ${apparel.join(" and ")}`);
+        
+        if (includes.time_period) tags.push(`in the ${getLangText(settings.time_period, "English")}`);
+        if (includes.emotion) tags.push(`with expression of ${getLangText(settings.emotion, "English")}`);
+        
+        if (settings.free_text && settings.free_text.trim() !== "") {
+          tags.push(settings.free_text.trim());
+        }
+      } else if (genre === "landscape") {
+        tags.push(isBW ? "fine-art black and white atmospheric landscape photography" : "breathtaking fine-art color scenic landscape photography");
+        if (includes.landscape_subject && settings.landscape_subject) {
+          tags.push(getLangText(settings.landscape_subject, "English"));
+        }
+        if (settings.free_text && settings.free_text.trim() !== "") {
+          tags.push(`capturing ${settings.free_text.trim()}`);
+        }
+      } else { // objects
+        tags.push(isBW ? "monochromatic fine-art still life studio object photography" : "high-detail analog still life object photography");
+        if (includes.object_subject && settings.object_subject) {
+          tags.push(getLangText(settings.object_subject, "English"));
+        }
+        if (settings.free_text && settings.free_text.trim() !== "") {
+          tags.push(settings.free_text.trim());
+        }
+      }
+
+      // Context extensions for Landscape and Objects
+      if (genre !== "portrait") {
+        if (includes.season && settings.season) tags.push(`season: ${getLangText(settings.season, "English")}`);
+        if (includes.time_of_day && settings.time_of_day) tags.push(`time of day: ${getLangText(settings.time_of_day, "English")}`);
+        if (includes.camera_elevation && settings.camera_elevation) tags.push(`elevation view: ${getLangText(settings.camera_elevation, "English")}`);
+      }
+
+      // Technical Gear & Film Info
+      if (includes.camera && settings.camera) tags.push(`camera: ${getLangText(settings.camera, "English")}`);
+      if (includes.lens && settings.lens) tags.push(`lens: ${getLangText(settings.lens, "English")}`);
+      
+      if (includes.expired_film && settings.expired_film) {
+        tags.push(`vintage expired film: ${getLangText(settings.expired_film, "English")}`);
+      } else if (includes.film && settings.film) {
+        let filmBase = getLangText(settings.film, "English");
+        if (includes.film_detail && settings.film_detail) {
+          filmBase += `, ${getLangText(settings.film_detail, "English")}`;
+        }
+        tags.push(`film base: ${filmBase}`);
+      } else if (includes.film_detail && settings.film_detail) {
+        tags.push(getLangText(settings.film_detail, "English"));
+      }
+
+      // Enlarging Paper & Style details
+      if (includes.expired_paper && settings.expired_paper) {
+        tags.push(`expired photography paper: ${getLangText(settings.expired_paper, "English")}`);
+      } else if (includes.quality && settings.quality) {
+        tags.push(`printed raw archival: ${getLangText(settings.quality, "English")}`);
+      }
+
+      if (includes.style && settings.style) tags.push(`photographer influence: ${getLangText(settings.style, "English")}`);
+      if (includes.lighting && settings.lighting) tags.push(`lighting setting: ${getLangText(settings.lighting, "English")}`);
+      
+      if (genre === "portrait" || genre === "objects") {
+        if (includes.background && settings.background) tags.push(`studio backdrop: ${getLangText(settings.background, "English")}`);
+        if (includes.props && settings.prop) tags.push(`props: ${getLangText(settings.prop, "English")}`);
+      }
+
+      if (includes.ambiance && settings.ambiance) tags.push(`ambiance: ${getLangText(settings.ambiance, "English")}`);
+      if (isOutdoor && includes.weather && settings.weather && (genre === "portrait" || genre === "landscape")) {
+        tags.push(`weather condition: ${getLangText(settings.weather, "English")}`);
+      }
+
+      const postProcApply = settings.post_processing_choice === "yes" || settings.post_processing_choice === "Ja" || settings.post_processing_choice === "yes / yes";
+      if (includes.post_processing && postProcApply && settings.post_processing) {
+        tags.push(`darkroom chemical processing: ${getLangText(settings.post_processing, "English")}`);
+      }
+
+      if (includes.effect && settings.effect) {
+        tags.push(`visual effect: ${getLangText(settings.effect, "English")}`);
+      }
+
+      // Add high-end tactile photographic raw token boosters
+      tags.push("raw photography", "100% film aesthetics", "organic texture detail", "depth of field");
+
+      return tags.map(t => t.trim()).filter(Boolean).join(", ");
+    }
+
+    // 🌸 FLUX.1 / SDXL NATURAL DESCRIPTIVE STYLE (Always in English, lang === "English")
     let base = "";
 
     if (genre === "portrait") {
@@ -316,19 +431,19 @@ export default function App() {
       } else {
         prefixKey = isBW ? "prompt_prefix_bw" : "prompt_prefix_color";
       }
-      const prefix = translationsData[lang][prefixKey as keyof typeof translationsData["Deutsch"]] || "Portrait";
+      const prefix = translationsData["English"][prefixKey as keyof typeof translationsData["English"]] || "A portrait";
 
       const parts: string[] = [];
-      parts.push(getLangText(settings.gender, lang));
+      parts.push(getLangText(settings.gender, "English"));
 
       if (includes.success) {
-        parts.push(getLangText(settings.success, lang));
+        parts.push(getLangText(settings.success, "English"));
       }
       if (includes.nationality && settings.nationality) {
-        parts.push(getLangText(settings.nationality, lang));
+        parts.push(getLangText(settings.nationality, "English"));
       }
       if (includes.role) {
-        parts.push(getLangText(settings.role, lang));
+        parts.push(getLangText(settings.role, "English"));
       }
 
       // INTEGRATE FREE TEXT AS A NATURAL CLAUSE
@@ -339,22 +454,22 @@ export default function App() {
       base = prefix;
       if (parts.length > 0) {
         const joinedParts = parts.join(" ");
-        const ofPhrase = translationsData[lang]["prompt_of"] || "of a";
+        const ofPhrase = translationsData["English"]["prompt_of"] || "of a";
         base = `${prefix} ${ofPhrase} ${joinedParts}`;
       }
 
       const detailList: string[] = [];
       if (includes.age) {
-        detailList.push(getLangText(settings.age_range, lang));
+        detailList.push(getLangText(settings.age_range, "English"));
       }
       if (includes.traits) {
-        detailList.push(getLangText(settings.traits, lang));
+        detailList.push(getLangText(settings.traits, "English"));
       }
       if (includes.details) {
-        detailList.push(getLangText(settings.details, lang));
+        detailList.push(getLangText(settings.details, "English"));
       }
       if (includes.pose) {
-        detailList.push(getLangText(settings.pose, lang));
+        detailList.push(getLangText(settings.pose, "English"));
       }
 
       if (detailList.length > 0) {
@@ -363,26 +478,26 @@ export default function App() {
 
       const apparel: string[] = [];
       if (includes.clothing) {
-        apparel.push(getLangText(settings.clothing, lang));
+        apparel.push(getLangText(settings.clothing, "English"));
       }
       if (includes.cultural) {
-        apparel.push(getLangText(settings.cultural_element, lang));
+        apparel.push(getLangText(settings.cultural_element, "English"));
       }
 
       if (apparel.length > 0) {
-        const andLabel = translationsData[lang]["prompt_and"] || "and";
-        const wearingLabel = translationsData[lang]["prompt_wearing"] || "wearing";
+        const andLabel = translationsData["English"]["prompt_and"] || "and";
+        const wearingLabel = translationsData["English"]["prompt_wearing"] || "wearing";
         base += `. ${wearingLabel} ${apparel.join(` ${andLabel} `)}`;
       }
 
       if (includes.time_period) {
-        const inLabel = translationsData[lang]["prompt_in"] || "in";
-        base += `, ${inLabel} ${getLangText(settings.time_period, lang)}`;
+        const inLabel = translationsData["English"]["prompt_in"] || "in the";
+        base += `, ${inLabel} ${getLangText(settings.time_period, "English")}`;
       }
 
       if (includes.emotion) {
-        const exprLabel = translationsData[lang]["prompt_expression"] || "Expression:";
-        base += `. ${exprLabel} ${getLangText(settings.emotion, lang)}`;
+        const exprLabel = translationsData["English"]["prompt_expression"] || "Expression:";
+        base += `. ${exprLabel} ${getLangText(settings.emotion, "English")}`;
       }
 
       // INTEGRATE FREE TEXT FOR PORTRAIT
@@ -392,14 +507,14 @@ export default function App() {
 
     } else if (genre === "landscape") {
       const landscapeTitle = isBW 
-        ? (isDE ? "Atmosphärische Schwarz-Weiß-Landschaftsaufnahme" : "Atmospheric black-and-white scenic landscape photography")
-        : (isDE ? "Majestätische Landschaftsfotografie" : "Majestic fine-art scenic landscape photography");
+        ? "Atmospheric black-and-white scenic landscape photography"
+        : "Majestic fine-art scenic landscape photography";
       
       base = landscapeTitle;
       
-      const ofLabel = isDE ? "von" : "showing";
+      const ofLabel = "showing";
       if (includes.landscape_subject && settings.landscape_subject) {
-        base += ` ${ofLabel} ${getLangText(settings.landscape_subject, lang)}`;
+        base += ` ${ofLabel} ${getLangText(settings.landscape_subject, "English")}`;
       }
 
       // INTEGRATE FREE TEXT FOR LANDSCAPE
@@ -409,14 +524,14 @@ export default function App() {
 
     } else if (genre === "objects") {
       const stillLifeTitle = isBW
-        ? (isDE ? "Künstlerische Schwarz-Weiß-Sachfotografie" : "Fine-art black-and-white still life studio photography")
-        : (isDE ? "Detailreiche Studio-Sachfotografie" : "High-detail studio still life object photography");
+        ? "Fine-art black-and-white still life studio photography"
+        : "High-detail studio still life object photography";
       
       base = stillLifeTitle;
 
-      const capturingLabel = isDE ? "von" : "capturing";
+      const capturingLabel = "capturing";
       if (includes.object_subject && settings.object_subject) {
-        base += ` ${capturingLabel} ${getLangText(settings.object_subject, lang)}`;
+        base += ` ${capturingLabel} ${getLangText(settings.object_subject, "English")}`;
       }
 
       // INTEGRATE FREE TEXT FOR OBJECTS
@@ -429,98 +544,96 @@ export default function App() {
     if (genre !== "portrait") {
       const partsContext: string[] = [];
       if (includes.season && settings.season) {
-        partsContext.push(getLangText(settings.season, lang));
+        partsContext.push(getLangText(settings.season, "English"));
       }
       if (includes.time_of_day && settings.time_of_day) {
-        partsContext.push(getLangText(settings.time_of_day, lang));
+        partsContext.push(getLangText(settings.time_of_day, "English"));
       }
       if (partsContext.length > 0) {
-        const transitionPhrase = isDE ? ", angesiedelt im" : ", set in";
+        const transitionPhrase = ", set in";
         base += `${transitionPhrase} ${partsContext.join(" during ")}`;
       }
       
       if (includes.camera_elevation && settings.camera_elevation) {
-        const viewPhrase = isDE ? ", aufgenommen aus der" : ", shot from a";
-        base += `${viewPhrase} ${getLangText(settings.camera_elevation, lang)}`;
+        const viewPhrase = ", shot from a";
+        base += `${viewPhrase} ${getLangText(settings.camera_elevation, "English")}`;
       }
     }
 
     // SHARED HARDWARE & LAB TECHNICALS (GEAR, FILM, DEVELOPER, PAPERS, LIGHTING)
     const techList: string[] = [];
     if (includes.camera && settings.camera) {
-      techList.push(getLangText(settings.camera, lang));
+      techList.push(getLangText(settings.camera, "English"));
     }
     if (includes.lens && settings.lens) {
-      techList.push(getLangText(settings.lens, lang));
+      techList.push(getLangText(settings.lens, "English"));
     }
 
     if (techList.length > 0) {
-      const capturedWithLabel = translationsData[lang]["prompt_captured_with"] || "captured with";
+      const capturedWithLabel = translationsData["English"]["prompt_captured_with"] || "captured with";
       base += `, ${capturedWithLabel} ${techList.join(" ")}`;
     }
 
     // EXPIRED FILM OR STOCK FILM
     if (includes.expired_film && settings.expired_film) {
-      const onLabel = translationsData[lang]["prompt_on"] || "on";
-      base += ` ${onLabel} vintage expired film: ${getLangText(settings.expired_film, lang)}`;
+      const onLabel = translationsData["English"]["prompt_on"] || "on";
+      base += ` ${onLabel} vintage expired film: ${getLangText(settings.expired_film, "English")}`;
     } else if (includes.film && settings.film) {
-      const onLabel = translationsData[lang]["prompt_on"] || "on";
-      base += ` ${onLabel} ${getLangText(settings.film, lang)}`;
+      const onLabel = translationsData["English"]["prompt_on"] || "on";
+      base += ` ${onLabel} ${getLangText(settings.film, "English")}`;
     }
 
     if (includes.film_detail && settings.film_detail) {
-      base += `, ${getLangText(settings.film_detail, lang)}`;
+      base += `, ${getLangText(settings.film_detail, "English")}`;
     }
 
     // EXPIRED PAPER OR QUALITY LEVEL
     if (includes.expired_paper && settings.expired_paper) {
-      const paperLabel = isDE 
-        ? "abgezogen auf abgelaufenem Barytpapier:" 
-        : "enlarged on historic expired silver-gelatin paper:";
-      base += `, ${paperLabel} ${getLangText(settings.expired_paper, lang)}`;
+      const paperLabel = "enlarged on historic expired silver-gelatin paper:";
+      base += `, ${paperLabel} ${getLangText(settings.expired_paper, "English")}`;
     } else if (includes.quality && settings.quality) {
-      base += `, printed as an archival ${getLangText(settings.quality, lang)}`;
+      base += `, printed as an archival ${getLangText(settings.quality, "English")}`;
     }
 
     if (includes.style && settings.style) {
-      const styleLabel = translationsData[lang]["prompt_style"] || "Style:";
-      base += `. ${styleLabel} ${getLangText(settings.style, lang)}`;
+      const styleLabel = translationsData["English"]["prompt_style"] || "Style:";
+      base += `. ${styleLabel} ${getLangText(settings.style, "English")}`;
     }
 
     if (includes.lighting && settings.lighting) {
-      base += `, under ${getLangText(settings.lighting, lang)}`;
+      base += `, under ${getLangText(settings.lighting, "English")}`;
     }
 
     if (genre === "portrait" || genre === "objects") {
       if (includes.background && settings.background) {
-        const bgLabel = translationsData[lang]["prompt_background"] || "Background:";
-        base += `. ${bgLabel} ${getLangText(settings.background, lang)}`;
+        const bgLabel = translationsData["English"]["prompt_background"] || "Background:";
+        base += `. ${bgLabel} ${getLangText(settings.background, "English")}`;
       }
 
       if (includes.props && settings.prop) {
-        const propLabel = translationsData[lang]["prompt_prop"] || "Prop:";
-        base += `. ${propLabel} ${getLangText(settings.prop, lang)}`;
+        const propLabel = translationsData["English"]["prompt_prop"] || "Prop:";
+        base += `. ${propLabel} ${getLangText(settings.prop, "English")}`;
       }
     }
 
     if (includes.ambiance && settings.ambiance) {
-      const ambLabel = translationsData[lang]["prompt_ambiance"] || "Ambiance:";
-      base += `. ${ambLabel} ${getLangText(settings.ambiance, lang)}`;
+      const ambLabel = translationsData["English"]["prompt_ambiance"] || "Ambiance:";
+      base += `. ${ambLabel} ${getLangText(settings.ambiance, "English")}`;
     }
 
     if (isOutdoor && includes.weather && settings.weather && (genre === "portrait" || genre === "landscape")) {
-      base += `. ${getLangText(settings.weather, lang)}`;
+      base += `. ${getLangText(settings.weather, "English")}`;
     }
 
     const postProcApply = settings.post_processing_choice === "yes" || settings.post_processing_choice === "Ja" || settings.post_processing_choice === "yes / yes";
     if (includes.post_processing && postProcApply && settings.post_processing) {
-      const processedLabel = translationsData[lang]["prompt_post_processed"] || "processed with";
-      base += `. ${processedLabel} ${getLangText(settings.post_processing, lang)}`;
+      const processedLabel = translationsData["English"]["prompt_post_processed"] || "processed with";
+      base += `. ${processedLabel} ${getLangText(settings.post_processing, "English")}`;
     }
 
     if (includes.effect && settings.effect) {
-      const effLabel = translationsData[lang]["prompt_effect"] || "Overall effect:";
-      base += `. ${effLabel} ${getLangText(settings.effect, lang)}`;
+      const effLabel = translationsData["English"]["prompt_effect"] || "Overall effect:";
+      base += `. ${effLabel} ${getLangText(settings.effect, "English")}`;
     }
 
     return base.trim();
@@ -593,6 +706,76 @@ export default function App() {
       setTimeout(() => setCopiedGerman(false), 2000);
     }
     // Record immediately to history on manual action
+    addCurrentPromptToHistory();
+  };
+
+  const handleCopyAsMarkdown = () => {
+    let md = `### 🎞️ Analog-Studio Prompt Recipe\n\n`;
+    
+    md += `**Prompt (English):**\n\`\`\`\n${englishPromptValue}\n\`\`\`\n\n`;
+    
+    if (settings.negative_prompt) {
+      md += `**Negative Prompt:**\n\`\`\`\n${settings.negative_prompt}\n\`\`\`\n\n`;
+    }
+    
+    md += `#### ⚙️ Technical Metadata & Recipe:\n`;
+    md += `- **Genre:** ${genre.toUpperCase()} (${getLangText(genre, "English")})\n`;
+    md += `- **Camera System:** ${getLangText(settings.camera, "English")}\n`;
+    md += `- **Optics / Glass:** ${getLangText(settings.lens, "English")}\n`;
+    
+    if (includes.expired_film && settings.expired_film) {
+      md += `- **Film Base:** Vintage Expired Film: ${getLangText(settings.expired_film, "English")}\n`;
+    } else if (includes.film && settings.film) {
+      md += `- **Film Base:** ${getLangText(settings.film, "English")}${includes.film_detail && settings.film_detail ? ` (${getLangText(settings.film_detail, "English")})` : ""}\n`;
+    }
+    
+    if (settings.post_processing) {
+      md += `- **Darkroom Chemistry:** ${getLangText(settings.post_processing, "English")}\n`;
+    }
+    
+    if (includes.expired_paper && settings.expired_paper) {
+      md += `- **Photo Paper Stock:** Vintage Expired Paper: ${getLangText(settings.expired_paper, "English")}\n`;
+    } else if (includes.quality && settings.quality) {
+      md += `- **Photo Paper Stock:** Archival ${getLangText(settings.quality, "English")}\n`;
+    }
+    
+    // Scene composition
+    md += `\n#### 🎨 Scene composition:\n`;
+    if (genre === "portrait") {
+      if (settings.gender) md += `- **Subject Gender:** ${getLangText(settings.gender, "English")}\n`;
+      if (includes.nationality && settings.nationality) md += `- **Ethnicity/Nationality:** ${getLangText(settings.nationality, "English")}\n`;
+      if (includes.role && settings.role) md += `- **Subject Role:** ${getLangText(settings.role, "English")}\n`;
+      if (settings.age_range) md += `- **Age Range:** ${getLangText(settings.age_range, "English")}\n`;
+      if (settings.traits) md += `- **Key Traits:** ${getLangText(settings.traits, "English")}\n`;
+      if (settings.details) md += `- **Anatomical Focus:** ${getLangText(settings.details, "English")}\n`;
+      if (settings.pose) md += `- **Pose Style:** ${getLangText(settings.pose, "English")}\n`;
+      if (settings.clothing) md += `- **Attire/Clothing:** ${getLangText(settings.clothing, "English")}\n`;
+      if (settings.time_period) md += `- **Era / Epoch:** ${getLangText(settings.time_period, "English")}\n`;
+      if (settings.emotion) md += `- **Expression:** ${getLangText(settings.emotion, "English")}\n`;
+    } else if (genre === "landscape") {
+      if (settings.landscape_subject) md += `- **Topographic Main:** ${getLangText(settings.landscape_subject, "English")}\n`;
+      if (includes.season && settings.season) md += `- **Seasonality:** ${getLangText(settings.season, "English")}\n`;
+      if (includes.time_of_day && settings.time_of_day) md += `- **Time of Day:** ${getLangText(settings.time_of_day, "English")}\n`;
+      if (includes.camera_elevation && settings.camera_elevation) md += `- **Bower Elevation:** ${getLangText(settings.camera_elevation, "English")}\n`;
+    } else { // objects
+      if (settings.object_subject) md += `- **Primary Object:** ${getLangText(settings.object_subject, "English")}\n`;
+      if (includes.background && settings.background) md += `- **Studio Backdrop:** ${getLangText(settings.background, "English")}\n`;
+      if (includes.props && settings.prop) md += `- **Ambient Prop:** ${getLangText(settings.prop, "English")}\n`;
+    }
+
+    // Other details
+    if (settings.style) md += `- **Photographic Style/Vibe:** ${getLangText(settings.style, "English")}\n`;
+    if (settings.lighting) md += `- **Lighting setup:** ${getLangText(settings.lighting, "English")}\n`;
+    if (settings.ambiance) md += `- **Atmosphere/Ambiance:** ${getLangText(settings.ambiance, "English")}\n`;
+    if (settings.weather) md += `- **Weather details:** ${getLangText(settings.weather, "English")}\n`;
+    if (settings.effect) md += `- **Overall aesthetic mood:** ${getLangText(settings.effect, "English")}\n`;
+    
+    md += `\n---\n*Generated with **[Analog-Studio Prompt Builder](${window.location.href})** – Precision Analog Photo Crafting Studio for AI Generative Models.*`;
+
+    navigator.clipboard.writeText(md);
+    setCopiedMarkdown(true);
+    setTimeout(() => setCopiedMarkdown(false), 2000);
+    
     addCurrentPromptToHistory();
   };
 
@@ -1111,8 +1294,8 @@ export default function App() {
                               className="flex-1 min-w-0 bg-stone-900/90 border border-stone-800 rounded px-2.5 py-1.5 text-xs text-stone-200 font-serif focus:border-amber-500 focus:outline-none truncate"
                               id="gender-dropdown"
                             >
-                              <option value="Männlich">{isDE ? "Männlich" : "Male"}</option>
-                              <option value="Weiblich">{isDE ? "Weiblich" : "Female"}</option>
+                              <option value="Männlich / Male">{isDE ? "Männlich" : "Male"}</option>
+                              <option value="Weiblich / Female">{isDE ? "Weiblich" : "Female"}</option>
                             </select>
                             <input
                               type="checkbox"
@@ -1796,7 +1979,7 @@ export default function App() {
                               id="attire-dropdown"
                             >
                               {/* Selected according to gender */}
-                              {((settings.gender === "Männlich" || settings.gender === "Male" 
+                              {((settings.gender?.includes("Männlich") || settings.gender?.includes("Male")
                                   ? options.mens_clothing 
                                   : options.womens_clothing
                                 ) || []).map((cl) => (
@@ -2099,28 +2282,50 @@ export default function App() {
                     
                     {/* PRIMARY MIDJOURNEY PROMPT (ENGLISH) */}
                     <div className="relative group" id="output-english-block">
-                      <div className="flex items-center justify-between mb-1.5" id="en-block-header">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5" id="en-block-header">
                         <span className="text-[11px] font-mono text-white uppercase tracking-widest font-bold" id="en-block-title">
-                          AI Prompt (English - Recommended)
+                          {isDE ? "Flux & SDXL-Stil (Englisch - Ausführlich)" : "Flux & SDXL Style (English - Descriptive)"}
                         </span>
                         
-                        <button
-                          onClick={() => handleCopyPrompt(englishPromptValue, true)}
-                          className="px-2.5 py-1 text-[10px] border border-white/10 hover:border-white/30 bg-zinc-950 hover:bg-white hover:text-black font-mono uppercase tracking-wider text-zinc-300 rounded-sm transition duration-300 flex items-center gap-1.5"
-                          id="copy-en-btn"
-                        >
-                          {copiedEnglish ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-zinc-400 animate-bounce" id="en-copied-icon" />
-                              <span className="text-zinc-300 font-semibold" id="en-copied-lbl">{isDE ? "Kopiert!" : "Copied!"}</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5 text-zinc-500 transition-colors" id="en-copy-icon" />
-                              <span id="en-copy-lbl">{isDE ? "Prompt kopieren" : "Copy Prompt"}</span>
-                            </>
-                          )}
-                        </button>
+                        <div className="flex items-center gap-2" id="en-block-actions">
+                          {/* Copy as Markdown Button */}
+                          <button
+                            onClick={handleCopyAsMarkdown}
+                            className="px-2.5 py-1 text-[10px] border border-amber-500/20 hover:border-amber-500/50 bg-amber-950/20 hover:bg-amber-500 hover:text-black font-mono uppercase tracking-wider text-amber-500 hover:text-black rounded-sm transition duration-300 flex items-center gap-1.5 cursor-pointer"
+                            id="copy-md-btn"
+                            title={isDE ? "Mit technischen Metadaten kopieren" : "Copy prompt with all technical metadata"}
+                          >
+                            {copiedMarkdown ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 animate-bounce" id="md-copied-icon" />
+                                <span className="font-semibold" id="md-copied-lbl">{isDE ? "MD Kopiert!" : "MD Copied!"}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-amber-500 transition-colors" id="md-copy-icon" />
+                                <span id="md-copy-lbl">{isDE ? "Als Markdown" : "Copy Markdown"}</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            onClick={() => handleCopyPrompt(englishPromptValue, true)}
+                            className="px-2.5 py-1 text-[10px] border border-white/10 hover:border-white/30 bg-zinc-950 hover:bg-white hover:text-black font-mono uppercase tracking-wider text-zinc-300 rounded-sm transition duration-300 flex items-center gap-1.5 cursor-pointer"
+                            id="copy-en-btn"
+                          >
+                            {copiedEnglish ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-zinc-400 animate-bounce" id="en-copied-icon" />
+                                <span className="text-zinc-300 font-semibold" id="en-copied-lbl">{isDE ? "Kopiert!" : "Copied!"}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-zinc-500 transition-colors" id="en-copy-icon" />
+                                <span id="en-copy-lbl">{isDE ? "Prompt kopieren" : "Copy Prompt"}</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
 
                       <div className="bg-[#050505] border border-white/10 p-4 rounded-sm text-xs font-mono text-zinc-200 leading-relaxed tracking-wide min-h-[140px] select-all max-h-[220px] overflow-y-auto" id="en-prompt-p">
@@ -2131,8 +2336,8 @@ export default function App() {
                     {/* GERMAN COMPARATIVE PREVIEW (IF SIGNIFICANTLY DIFFERENT) */}
                     <div className="relative" id="output-german-block">
                       <div className="flex items-center justify-between mb-1.5" id="de-block-header">
-                        <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest" id="de-block-title">
-                          {isDE ? "Deutsche Übersetzung" : "German Reference Translation"}
+                        <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest font-bold" id="de-block-title">
+                          {isDE ? "Midjourney & SD1.5-Stil (Englisch - Tag/Token)" : "Midjourney & SD1.5 Style (English - Tag/Token)"}
                         </span>
 
                         <button
@@ -2199,28 +2404,60 @@ export default function App() {
 
                 {/* Quick Recipes panel in sidebar */}
                 <div className="bg-[#0c0c0e] border border-white/10 rounded-sm p-4" id="quick-recipes-sidebar-panel">
-                  <h4 className="text-xs font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2 flex items-center gap-1.5 text-zinc-400" id="quick-recipes-title">
-                    <History className="w-4 h-4 text-white" id="quick-recipes-icon" />
-                    <span>Schnelle Entwickler-Profile</span>
+                  <h4 className="text-xs font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2 flex items-center justify-between gap-1.5 text-zinc-400" id="quick-recipes-title">
+                    <div className="flex items-center gap-1.5">
+                      <History className="w-3.5 h-3.5 text-amber-500 animate-pulse" id="quick-recipes-icon" />
+                      <span>{isDE ? "Schnelle Entwickler-Profile" : "Quick Developer Profiles"}</span>
+                    </div>
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 bg-zinc-950 border border-white/5 text-amber-500/80 rounded-[2px]" id="quick-recipes-count">
+                      13 Presets
+                    </span>
                   </h4>
-                  <div className="grid grid-cols-2 gap-2" id="quick-recipes-grid">
-                    {/* First two presets for quick action */}
-                    <button
-                      onClick={() => handleLoadPreset(presetRecipes[0])}
-                      className="p-2.5 border border-white/10 hover:border-white/30 bg-zinc-950 hover:bg-[#050505] rounded-sm text-left transition duration-300 cursor-pointer"
-                      id="recipe-quick-0"
-                    >
-                      <span className="text-xs font-sans font-bold text-white truncate block">Leibovitz Cinematic</span>
-                      <span className="text-[10px] font-mono text-zinc-500 truncate block mt-0.5 uppercase tracking-wide">Mittelformat & Portra</span>
-                    </button>
-                    <button
-                      onClick={() => handleLoadPreset(presetRecipes[1])}
-                      className="p-2.5 border border-white/10 hover:border-white/30 bg-zinc-950 hover:bg-[#050505] rounded-sm text-left transition duration-300 cursor-pointer"
-                      id="recipe-quick-1"
-                    >
-                      <span className="text-xs font-sans font-bold text-white truncate block">Lindbergh Monochrom</span>
-                      <span className="text-[10px] font-mono text-zinc-500 truncate block mt-0.5 uppercase tracking-wide">Leica M6 & Tri-X</span>
-                    </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800" id="quick-recipes-grid">
+                    {presetRecipes.map((preset, idx) => {
+                      // Compact hardware + film representation for subtitle
+                      let cameraShorthand = "";
+                      try {
+                        if (preset.settings.camera) {
+                          const cam = preset.settings.camera.replace(" Classic", "").replace(" Messsucher", "").replace(" SLR", "").replace(" TLR", "");
+                          const camFirstWords = cam.split(" ").slice(0, 2).join(" ");
+                          
+                          if (preset.settings.film) {
+                            const filmShort = preset.settings.film.split(",")[0].replace(" film", "").replace("Film", "").replace(" Diafilm", "").trim();
+                            const filmWords = filmShort.split(" ").slice(0, 2).join(" ");
+                            cameraShorthand = `${camFirstWords} & ${filmWords}`;
+                          } else {
+                            cameraShorthand = camFirstWords;
+                          }
+                        } else {
+                          cameraShorthand = "Analog Recipe";
+                        }
+                      } catch (e) {
+                        cameraShorthand = "Master Preset";
+                      }
+
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleLoadPreset(preset)}
+                          className="w-full text-left p-2 border border-white/5 hover:border-amber-500/30 bg-zinc-950/60 hover:bg-zinc-900/90 rounded-sm transition-all duration-300 cursor-pointer flex items-center gap-2 group"
+                          id={`recipe-quick-${idx}`}
+                          title={preset.description}
+                        >
+                          <span className="text-base shrink-0 select-none group-hover:scale-110 transition-transform duration-300" id={`recipe-quick-icon-${idx}`}>
+                            {preset.icon || "📷"}
+                          </span>
+                          <div className="min-w-0 flex-1" id={`recipe-quick-info-${idx}`}>
+                            <span className="text-xs font-sans font-bold text-zinc-300 group-hover:text-white truncate block transition-colors" id={`recipe-quick-title-${idx}`}>
+                              {preset.title}
+                            </span>
+                            <span className="text-[9px] font-mono text-zinc-500 group-hover:text-amber-500/80 truncate block mt-0.5 tracking-wide uppercase transition-colors" id={`recipe-quick-shorthand-${idx}`}>
+                              {cameraShorthand}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

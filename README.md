@@ -1,77 +1,114 @@
 # Silver & Graphite – Analog Darkroom Prompt Studio
 
-A highly crafted, professional and responsive TypeScript & React workbench designed for compiling hyper-precise, granular prompt recipes for advanced AI image generators (such as Midjourney v6, Flux.1, and Stable Diffusion).
+A masterfully crafted, high-precision TypeScript & React workbench designed to generate hyper-detailed, physical-emulsion prompts for modern AI image generators (such as Midjourney v6, Flux.1, and Stable Diffusion).
 
-Styled in an **Elegant Dark / Silver & Graphite** tactile console theme, this workbench focuses specifically on the nuanced, authentic aesthetics of vintage and analog lifestyle portraiture and landscape photography.
-
----
-
-## 🎨 Design Philosophy & Theme
-
-*   **Tactile Dunkelkammer Aesthetic**: Styled with a monochromatic cosmic-slate palette, ultra-fine white/10 borders, responsive glass backdrops, and interactive grain overlays reminiscent of high-silver-gelatin emulsions.
-*   **Aesthetic Pairings**: Clean high-contrast, modern "Inter" sans-serif layout titles paired with "JetBrains Mono" metadata flags and classic serif styling for photographic option selections.
-*   **Layout Fluidity**: Designed for desktop precision and mobile elasticity. Built with a responsive grid layout, flex-item clip protections, and scroll boundaries that avoid overlap or overflow.
+Styled in an elegant, monochromatic **"Cosmic-Slate / Silver & Graphite"** aesthetic, this application targets photographers, digital artists, and AI prompt designers seeking to command the meticulous look and feel of real analog photography.
 
 ---
 
-## 🔒 100% Offline & Local Privacy (Uncompromising Architecture)
+## 🎨 Creative Philosophy & Visual Paradigm
 
-In accordance with strict security standards, this workbench operates **entirely clientside**. 
-*   **No external API calls, third-party libraries, tracking pixels, or AI model endpoints** are utilized.
-*   All photographic knowledge, translation engines, variation mutation algorithms, and step-by-step logic sheets are computed on raw offline taxonomies compiled in local TypeScript assets.
-*   Your descriptions and crafted presets remain securely protected inside your local sandbox.
-
----
-
-## ⚙️ Core Capabilities & Advanced Workflows
-
-### 1. Granular Photography Scenarios
-The generator is highly optimized for three distinct photographic domains, providing distinct customized parameters and tailored dynamic prompt generation:
-*   **Portrait (Porträt)**: Detailed settings for gender, age, facial expressions, attire styles, periods (e.g., 1920s jazz, flapper, classic couture), and anatomical focuses.
-*   **Landscape (Landschaft)**: Dedicated selectors for topographic features, vegetation density, specific celestial times, and weather/meteorological conditions.
-*   **Objects (Sachfotografie & Stillleben)**: Tailored parameters for texture detailing, object placements, material surfaces (wood, glass, rusted metals), and rustic props.
-
-### 2. Dual-Paradigm Interactive Assistants
-Unbelievably versatile interfaces guide both rapid builders and conceptual creators:
-*   **The Click-Wizard (StudioWizard)**: A structured step-by-step digital process board. Tap through hardware optics, film emulsions, lighting setups, and paper choices to click together a pristine setup in seconds.
-*   **The Conversational Alchemist (StudioDialog)**: A local conversational workflow. Walk through an active chemical sequence chat, answering tailored prompt design questions verbally or via fast predefined suggestion keys.
-
-### 3. Extensive Polaroid & Specialty Formats
-We support massive collections of camera systems including:
-*   **Instant Polaroid Formats**: SX-70 manual compacts, modern i-Type, 600 Monochrome nostalgic direct, and Fuji FP-100C legendary peel-apart packfilm.
-*   **Specialty Hardware**: Linhof Master Technika 4x5, Großformat field bellows cameras, wet-plate glass plates, and toy mechanical optics.
-
-### 4. Raw Emulsions & Paper Chemistry
-A massive darkroom suite for developing profile options:
-*   **Wet Processes**: Vandyke hand-coated brown, Lith prints, Pyrogallol tanning developers, cyanotype sun-prints, and albumen historic emulsions.
-*   **Vintage Aged Paper Stocks**: Agfa Brovira (1978 yellowed silver), Guilleminot Bromure French vintage bromide, Orwo Baryt (1982 coarse gray), and Leonar Baryt (1971 extreme warm-out).
+- **Tactile Darkroom Aura**: Crafted with a deep, low-fatigue slate and silver palette, thin borders (`border-white/10`), frosted-glass backdrops, and interactive transitions that mimic traditional processing.
+- **Typographic Depth**: Contemporary "Inter" sans-serif layout titles paired with technical "JetBrains Mono" metadata gauges and graceful serifs for fine-art selection menus.
+- **Architectural Flow**: Works perfectly across both widescreen desktops and compact mobile portrait views. Generous touch targets (min-44px) prevent miss-clicks, with fluid layout animations driven by React Motion.
 
 ---
 
-## 🛠️ Directory Structure
+## ⚡ The 13 Quick Developer Profiles (Instant Analogue Presets)
 
-*   `src/App.tsx`: Main orchestrator, containing prompt compiling formulas, dual-language engines, and scenario forms.
-*   `src/data.ts`: Deep photographic database detailing all cameras, films, papers, and processing chemistry translations.
-*   `src/components/StudioWizard.tsx`: Step-by-step tactile wizard board with full list navigation.
-*   `src/components/StudioDialog.tsx`: Dialog-driven step-by-step master alchemist sheet.
-*   `src/types.ts`: Strictly-typed models (`SavedPrompt`, `PresetRecipe`).
+Located right in the sidebar layout for instant access, the studio comes preloaded with **13 historic, chemistry-accurate Master Presets** modeled after the world's most influential photographers:
+
+1. 📸 **The Leibovitz Cinematic (Annie Leibovitz)**
+   - *Vibe*: Rich, deep theatrical studio portraits with painterly shadow depth and majestic tones.
+   - *Gear*: Hasselblad 503CW paired with Kodak Portra 160.
+2. 🎞️ **Peter Lindbergh Monochrom (Peter Lindbergh)**
+   - *Vibe*: Raw, emotive black-and-white realism. Unretouched, pure human presence.
+   - *Gear*: Leica M6 Classic paired with high-contrast Kodak Tri-X 400.
+3. 🕯️ **Yousuf Karsh Monumental (Yousuf Karsh)**
+   - *Vibe*: Highly sculpted, high-density chiaroscuro lighting on dark velvet backdrops.
+   - *Gear*: Linhof Master Technika 4x5 on vibrant Kodak Ektachrome E100 slides.
+4. 🦓 **Richard Avedon Starkness (Richard Avedon)**
+   - *Vibe*: Piercing, head-on portraits against seamless white backdrops with no distracting shadows.
+   - *Gear*: Deardorff 8x10 Large Format wooden camera with Kodak Tri-X 400.
+5. 🏙️ **Vivian Maier Candid Street (Vivian Maier)**
+   - *Vibe*: Intimate 1950s Chicago street snapshots, waist-level perspective with gritty city shadows.
+   - *Gear*: Rolleiflex 2.8F Twin-Lens Reflex on Ilford HP5 Plus.
+6. 👁️ **Steve McCurry National Geographic (Steve McCurry)**
+   - *Vibe*: Saturated, emotional storytelling with glowing, soul-piercing eyes against blurred landscapes.
+   - *Gear*: Nikon F3 HP on the legendary, warm Kodachrome 64 slide film.
+7. 🕶️ **Helmut Newton High-Gloss Noir (Helmut Newton)**
+   - *Vibe*: Provocative, high-fashion storytelling. Hard direct camera-flash halos and luxurious balconies.
+   - *Gear*: Hasselblad 500C/M on sleek, cool Fujichrome Provia 100F slides.
+8. 🏃 **Henri Cartier-Bresson Decisive (Henri Cartier-Bresson)**
+   - *Vibe*: Spontaneous street geometry. Fluid, wind-tousled coats reflecting off wet Parisian cobblestones.
+   - *Gear*: Leica M3 rangefinder with Kodak Tri-X 400.
+9. ⛰️ **Ansel Adams Zone System (Ansel Adams)**
+   - *Vibe*: Majestic, hyper-sharp landscapes utilizing custom exposure zones for breathtaking tone spans.
+   - *Gear*: Sinar P2 8x10 monorail camera loaded with fine-grain Fujifilm Neopan 100 Acros.
+10. 📐 **Irving Penn Sculptural Gray (Irving Penn)**
+    - *Vibe*: Minimalist, graphic geometry. Subject is posed inside a narrow gray corner under soft north-light window glow.
+    - *Gear*: Hasselblad 500C/M on fine-grain Kodak Plus-X 125.
+11. 🏺 **Sally Mann Gothic Wet Plate (Sally Mann)**
+    - *Vibe*: Haunting Southern Gothic wet-plate collodion portraits, complete with silver-mirroring stains and soft Petzval swirl bokeh.
+    - *Gear*: Graflex Speed Graphic 4x5 vintage press camera processed on direct wet glass plates.
+12. 🎖️ **Robert Capa Gritty Reportage (Robert Capa)**
+    - *Vibe*: Dynamic, historical photojournalism. Kinetic motion, thick silver-halide grain and splattered mud.
+    - *Gear*: Nikon FM2n capturing active historical events on raw Kodak Tri-X.
+13. 🍭 **Andy Warhol Polaroid SX-70 (Andy Warhol)**
+    - *Vibe*: Flamboyant, flat-flash pop art of the 1970s Factory scene. Decayed cream borders and vintage orange color shifts.
+    - *Gear*: Yashica Mat 124G TLR outputting onto instant Polaroid SX-70 Time-Zero.
 
 ---
 
-## 🚀 Setup & Execution
+## ⚡ Real-Time Dual Prompt Compiler Engines
+
+The darkroom automatically compiles two distinct mathematical prompt strategies in parallel:
+
+### 1. Flux & SDXL Style (Natural Language Prosaic)
+- **Concept**: Highly expressive English sentences weaving hardware, lenses, and ambient characteristics together organically (e.g., *"A stunning analog portrait shot using a classic medium format camera to capture the fine silver-halide grain..."*).
+- **Target**: Built for modern LLM-driven diffusion models that require conversational context to establish depth.
+
+### 2. Midjourney & SD1.5 Style (Token-Tag Matrix)
+- **Concept**: Highly dense, tag-spaced, tokenized keyword prompt structures emphasizing parameters, lighting modifiers, and custom execution parameters (e.g., `portrait, raw analogue photo, Hasselblad 500C/M, volumetric side lighting, 8k --ar 4:5 --v 6.0`).
+- **Target**: Built for classic generation models requiring explicit algorithmic weighting.
+
+---
+
+## ⏱️ Historical Exposure Log & Comparative Diff Analyzer
+
+The app features an advanced session-level chronological log:
+- **Automatic Auto-Saves**: Logs up to your last 10 darkroom experiments.
+- **Mechanical Parameter Shift Display**: Detects and highlights modified camera, lens, style, or film adjustments side-by-side with semantic color feedback (Red for removed items, Emerald for added).
+- **LCS Differential Comparison**: Integrates a highly responsive, custom-programmed Longest Common Subsequence (LCS) algorithmic analyzer to highlight character/word-level changes between any two compiled prompts.
+
+---
+
+## 🚀 Setting Up the Studio Locally
 
 ### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Start Developer Workbench
+### 2. Boot up Development Server (with Hot Reloading)
 ```bash
 npm run dev
 ```
 
-### 3. Compile Production Bundle
+### 3. Build Production Bundles
 ```bash
 npm run build
 ```
-The application compiles into static files inside the `/dist` directory.
+
+The compiled SPA static assets will print cleanly into the `/dist` directory, fully optimized for fast static deployment.
+
+---
+
+## ⚖️ Disclaimer & Contact
+
+> [!WARNING]
+> **No Support Offered (Kein Support)**  
+> This code is provided **strictly "as is" without warranty or supportive SLA** of any kind. You are fully encouraged to fork, tinker, break, and rebuild this workbench as you see fit.
+>
+> However, I love seeing what people create with this! If you run into creative problems, want to share some synthesized masterpiece layouts, or just want to network and talk shop:
+> - **Feel free to send a Direct Message (DM) anytime!** Let's connect over fine-art design.
